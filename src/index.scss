@@ -11,3 +11,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.field {
+  width: 80vw;
+  height: 80vh;
+  margin: 100px auto;
+  background-color: cornflowerblue;
+  border: 5px solid darkgray;
+   .ball {
+     width: 20px;
+     height: 20px;
+     border-radius: 20px;
+     background-color: black;
+
+   }
+}
