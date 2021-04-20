@@ -1,14 +1,19 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Button} from "@material-ui/core";
-import { fromEvent, Observable } from "rxjs";
+import { fromEvent } from "rxjs";
 import { map } from 'rxjs/operators'
 const Field = () => {
+
+    const [rocketCord, setRocketCord ] = useState({ y: 400 , x: 800  })
+    const [ballCord, setBallCord ] = useState({ y: 400 , x: 800  })
 const ball = useRef(null)
 const field = useRef(null)
 const rocket = useRef(null)
+
     useEffect(() =>{
         fromEvent(field.current,'click')
             .subscribe(() =>{handleClick()})
+
     },[])
 
 
@@ -16,10 +21,8 @@ const rocket = useRef(null)
     let posY =0, posX =0, stepX= 0, stepY = 0
 
   const handleClick = () => {
-
       stepX= 20
          stepY = 30
-
       const interval = setInterval(() => { move()
           }, 16)
 
@@ -42,21 +45,20 @@ const rocket = useRef(null)
 
 
  useEffect(() =>{
-     fromEvent(field.current,'mousemove')
+ const subscription = fromEvent(field.current,'mousemove')
          .pipe(
              map(e =>({
                  x: e.offsetX,
                  y: e.offsetY
              }))
-
          )
          .subscribe(event=>{
              rocket.current.style.cssText = `top : ${event.y-80}px; left : ${event.x -100}px`
-             console.log('Y= ' +event.y,'X= ' +event.x )
-
          })
-
+      return ()=> { subscription.unsubscribe()}
  },[])
+
+
 
 
     return (
