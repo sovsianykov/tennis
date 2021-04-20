@@ -1,11 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {Button} from "@material-ui/core";
-import { fromEvent } from "rxjs";
+import {fromEvent, Observable} from "rxjs";
 import { map } from 'rxjs/operators'
+import {observe} from "web-vitals/dist/modules/lib/observe";
 const Field = () => {
 
-    const [rocketCord, setRocketCord ] = useState({ y: 400 , x: 800  })
-    const [ballCord, setBallCord ] = useState({ y: 400 , x: 800  })
+    const [rocketCord, setRocketCord ] = useState({})
+    const [ballCord, setBallCord ] = useState({})
 const ball = useRef(null)
 const field = useRef(null)
 const rocket = useRef(null)
@@ -26,13 +27,14 @@ const rocket = useRef(null)
       const interval = setInterval(() => { move()
           }, 16)
 
-      setTimeout(() => { clearInterval(interval);}, 10000);
+      setTimeout(() => { clearInterval(interval)}, 10000);
   }
     function move() {
         coordinates = ball.current.getBoundingClientRect()
         // console.log("Top:"+coordinates.y+", Left:"+coordinates.x)
         posY+= stepY;
         posX+= stepX;
+        setBallCord({x: posX, y : posY})
 
         if (posY > 780 || posY < 0  ) { stepY*= -1 }
         if (posX > 980 || posX < 0  ) { stepX*= -1 }
@@ -54,10 +56,20 @@ const rocket = useRef(null)
          )
          .subscribe(event=>{
              rocket.current.style.cssText = `top : ${event.y-80}px; left : ${event.x -100}px`
+             setRocketCord({x: event.x - 100,y: event.y - 80})
+
          })
-      return ()=> { subscription.unsubscribe()}
+
+     return ()=> { subscription.unsubscribe()}
  },[])
 
+    const stream$ = new Observable((observer) =>{
+        observer.next(ballCord)
+
+    })
+     stream$.subscribe(
+         value =>console.log(value)
+     )
 
 
 
