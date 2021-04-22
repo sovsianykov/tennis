@@ -1,8 +1,9 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Button} from "@material-ui/core";
 import { fromEvent, Observable } from "rxjs";
 import { map } from 'rxjs/operators'
 const Field = () => {
+    const [rocketC,setRocetC] = useState({ x: 800, y : 200})
 const ball = useRef(null)
 const field = useRef(null)
 const rocket = useRef(null)
@@ -25,20 +26,6 @@ const rocket = useRef(null)
 
       setTimeout(() => { clearInterval(interval);}, 10000);
   }
-    function move() {
-        coordinates = ball.current.getBoundingClientRect()
-        // console.log("Top:"+coordinates.y+", Left:"+coordinates.x)
-        posY+= stepY;
-        posX+= stepX;
-
-        if (posY > 780 || posY < 0  ) { stepY*= -1 }
-        if (posX > 980 || posX < 0  ) { stepX*= -1 }
-        ball.current.style.cssText = `margin-top : ${posY}px ; margin-left : ${posX}px ` ;
-        stepX*= .995
-        stepY*= .995
-
-
-    }
 
 
  useEffect(() =>{
@@ -52,11 +39,27 @@ const rocket = useRef(null)
          )
          .subscribe(event=>{
              rocket.current.style.cssText = `top : ${event.y-80}px; left : ${event.x -100}px`
-             console.log('Y= ' +event.y,'X= ' +event.x )
+             setRocetC( { x : event.x, y: event.y })
 
          })
 
  },[])
+    console.log(rocketC.x)
+    function move() {
+        coordinates = ball.current.getBoundingClientRect()
+        // console.log("Top:"+coordinates.y+", Left:"+coordinates.x)
+        posY+= stepY;
+        posX+= stepX;
+        console.log(rocketC.x)
+        if (posY > 780 || posY < 0  ) { stepY*= -1 }
+        if (posX > 980 || posX < 0  ) { stepX*= -1 }
+        ball.current.style.cssText = `margin-top : ${posY}px ; margin-left : ${posX}px ` ;
+        stepX*= .995
+        stepY*= .995
+
+
+    }
+
 
 
     return (
